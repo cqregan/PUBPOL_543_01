@@ -1,0 +1,95 @@
+---
+title: "index"
+output: html_notebook
+---
+
+```{r}
+location='https://github.com/cqregan/PUBPOL_543_01/raw/main/'
+file='Use_Of_Force.csv'
+link=paste0(location,file)
+link
+```
+
+```{r}
+#getting the data TABLE from the file in the cloud:
+df = read.csv(file=url(link))
+df
+```
+
+```{r}
+dfCleaned = df
+dfCleaned["Precinct"][dfCleaned["Precinct"] == "X"] <- "Unknown"
+dfCleaned["Precinct"][dfCleaned["Precinct"] == "0"] <- "Unknown"
+dfCleaned["Precinct"][dfCleaned["Precinct"] == "-"] <- "Unknown"
+dfCleaned
+```
+
+```{r}
+absoluteT=table(dfCleaned$Precinct,
+                exclude = 'nothing') 
+dfCleaned
+```
+```{r}
+prop.table(absoluteT)
+```
+```{r}
+propT=prop.table(absoluteT)*100
+propT
+```
+
+```{r}
+(tableFreq=as.data.frame(absoluteT))
+```
+```{r}
+names(tableFreq)=c("Precinct","Count")
+tableFreq$Percent=as.vector(propT)
+tableFreq
+```
+
+
+```{r}
+base= ggplot(data = tableFreq, 
+             aes(x = Precinct,
+                 y = Count)) 
+```
+
+```{r}
+plot1 = base + geom_bar(fill ="gray",
+                        stat = 'identity') 
+plot1
+```
+
+```{r}
+titleText='How frequently do police precincts in Seattle use force?'
+sourceText='Source: City of Seattle'
+
+plot2 = plot1 + labs(title=titleText,
+                     x =NULL, 
+                     y = NULL,
+                     caption = sourceText) 
+plot2
+```
+
+```{r}
+tableFreq=tableFreq[order(tableFreq$Percent),]
+# then:
+tableFreq
+```
+
+```{r}
+(PrecinctOrd=tableFreq[order(tableFreq$Percent),'Precinct'])
+```
+```{r}
+base= base + scale_x_discrete(limits=PrecinctOrd) 
+base= base + theme_classic()
+##
+plot1 = base + geom_bar(fill ="gray",
+                        stat = 'identity') 
+plot2 = plot1 + labs(title=titleText,
+                     x =NULL, 
+                     y = NULL,
+                     caption = sourceText)
+
+plot2
+```
+
