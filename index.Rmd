@@ -1,6 +1,8 @@
 ---
 title: "index"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r}
@@ -44,6 +46,9 @@ propT
 names(tableFreq)=c("Precinct","Count")
 tableFreq$Percent=as.vector(propT)
 tableFreq
+```
+```{r}
+library(ggplot2)
 ```
 
 
